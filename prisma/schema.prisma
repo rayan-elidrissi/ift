@@ -1,0 +1,67 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  student
+  staff
+  admin
+}
+
+enum Visibility {
+  pending
+  hidden
+  visible
+}
+
+enum Category {
+  research
+  students
+  arts
+  events
+}
+
+model User {
+  id              String    @id @default(cuid())
+  email           String    @unique
+  passwordHash    String
+  role            Role      @default(student)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  deletedAt       DateTime?
+  projects        Project[]
+  participatingIn Project[] @relation("ProjectParticipants")
+}
+
+model Project {
+  id           String     @id @default(cuid())
+  title        String
+  content      String     @db.Text
+  coverImage   String?
+  visibility   Visibility @default(hidden)
+  category     Category   @default(students)
+  author       User       @relation(fields: [authorId], references: [id])
+  authorId     String
+  participants User[]     @relation("ProjectParticipants")
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  deletedAt    DateTime?
+
+  @@index([visibility])
+  @@index([authorId])
+  @@index([category])
+}
+
+model Resource {
+  id        String   @id @default(cuid())
+  slug      String   @unique
+  content   Json
+  version   String   @default("Draft")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

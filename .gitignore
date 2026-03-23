@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+
+# Next.js
+.next/
+out/
+
+# Environment files (never commit secrets)
+.env
+.env.local
+.env.*.local
+
+# Uploads (managed separately on VPS, use ./uploads locally)
+uploads/*
+!uploads/.gitkeep
+
+# Prisma
+prisma/migrations/
+
+# Build
+dist/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# PM2
+.pm2/
